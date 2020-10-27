@@ -338,9 +338,9 @@ files:
       .DHCPServer:
         comment: DHCP server parameters
         fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BDHCPServer%5D%20Section%20Options
-      .IPv6PrefixDelegation:
-        comment: settings for sending IPv6 Router Advertisements and whether to act as a router
-        fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BIPv6PrefixDelegation%5D%20Section%20Options
+      # .IPv6PrefixDelegation:
+      #   comment: settings for sending IPv6 Router Advertisements and whether to act as a router
+      #   fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BIPv6PrefixDelegation%5D%20Section%20Options
       .IPv6Prefix:
         comment: IPv6 prefix that are announced via Router Advertisements
         fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BIPv6Prefix%5D%20Section%20Options
@@ -356,9 +356,9 @@ files:
       .CAN:
         comment: Controller Area Network (CAN bus) parameters
         fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BCAN%5D%20Section%20Options
-      .TrafficControlQueueingDiscipline:
-        comment: traffic control parameters
-        fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BTrafficControlQueueingDiscipline%5D%20Section%20Options
+      # .TrafficControlQueueingDiscipline:
+      #   comment: traffic control parameters
+      #   fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BTrafficControlQueueingDiscipline%5D%20Section%20Options
       .BridgeVLAN:
         comment: VLAN ID configuration of a bridge port
         fields: https://www.freedesktop.org/software/systemd/man/systemd.network.html#%5BBridgeVLAN%5D%20Section%20Options
