@@ -147,7 +147,7 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 			return nil
 		}
 	}
-	if field.Type == durationType {
+	if indirectType(field.Type) == durationType {
 		d, err := entry.Value.Duration()
 		if err != nil {
 			return &FieldError{
@@ -160,14 +160,16 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 		v.Set(reflect.ValueOf(d))
 		return nil
 	}
-	switch field.Type.Kind() {
+
+	it := indirectType(field.Type)
+	switch it.Kind() {
 	case reflect.Bool:
 		b, err := entry.Value.Bool()
 		if err != nil {
 			return &FieldError{
 				Struct: field.Struct,
 				Field:  field.Name,
-				Type:   field.Type,
+				Type:   it,
 				Err:    err,
 			}
 		}
@@ -176,9 +178,9 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 		v.SetString(entry.Value.String())
 	case reflect.Array, reflect.Slice:
 		n := len(entry.Value)
-		if field.Type.Kind() == reflect.Slice {
+		if it.Kind() == reflect.Slice {
 			if n > v.Cap() {
-				slice := reflect.MakeSlice(field.Type, n, n)
+				slice := reflect.MakeSlice(it, n, n)
 				reflect.Copy(slice, v)
 				v.Set(slice)
 			}
@@ -188,7 +190,7 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 			n = v.Len()
 		}
 		for i := 0; i < n; i++ {
-			lt := indirectType(field.Type.Elem())
+			lt := indirectType(it.Elem())
 			lv := indirect(v.Index(i))
 			if !lv.IsValid() {
 				continue
@@ -199,7 +201,7 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 					return &FieldError{
 						Struct: field.Struct,
 						Field:  field.Name,
-						Type:   field.Type,
+						Type:   it,
 						Err:    err,
 					}
 				}
@@ -213,7 +215,7 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 					return &FieldError{
 						Struct: field.Struct,
 						Field:  field.Name,
-						Type:   field.Type,
+						Type:   it,
 						Err:    err,
 					}
 				}
@@ -224,13 +226,13 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 				return &FieldError{
 					Struct: field.Struct,
 					Field:  field.Name,
-					Type:   field.Type,
+					Type:   it,
 					Err:    errors.New("unsupported type"),
 				}
 			}
 		}
-		if field.Type.Kind() == reflect.Array && len(entry.Value) < v.Len() {
-			zero := reflect.Zero(field.Type.Elem())
+		if it.Kind() == reflect.Array && len(entry.Value) < v.Len() {
+			zero := reflect.Zero(it.Elem())
 			for i := len(entry.Value); i < v.Len(); i++ {
 				v.Index(i).Set(zero)
 			}
@@ -239,7 +241,7 @@ func unmarshalEntry(entry *Entry, field *fieldInfo, v reflect.Value) error {
 		return &FieldError{
 			Struct: field.Struct,
 			Field:  field.Name,
-			Type:   field.Type,
+			Type:   it,
 			Err:    errors.New("unsupported type"),
 		}
 	}
