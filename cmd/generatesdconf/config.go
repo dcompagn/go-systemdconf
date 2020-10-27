@@ -21,9 +21,9 @@ func (f configField) String() string {
 		f.Type = "systemdconf.Value"
 	}
 	if f.Short {
-		return fmt.Sprintf("%s %s // %s", f.Name, f.Type, f.Comment)
+		return fmt.Sprintf("%s *%s `json:\",omitempty\"` // %s", f.Name, f.Type, f.Comment)
 	}
-	return fmt.Sprintf("%s\n%s %s", comment(f.Comment), f.Name, f.Type)
+	return fmt.Sprintf("%s\n%s *%s `json:\",omitempty\"`", comment(f.Comment), f.Name, f.Type)
 }
 
 type configFields []configField

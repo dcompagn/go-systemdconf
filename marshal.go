@@ -177,28 +177,28 @@ func marshalEntries(field *fieldInfo, v reflect.Value) ([]*ast.Entry, error) {
 		}
 		return entries, nil
 	}
-	if field.Type == durationType {
+	if indirectType(field.Type) == durationType {
 		return []*ast.Entry{{
 			Key:   field.Name,
-			Value: FormatDuration(v.Interface().(time.Duration)),
+			Value: FormatDuration(indirect(v).Interface().(time.Duration)),
 		}}, nil
 	}
-	switch field.Type.Kind() {
+	switch indirectType(field.Type.Kind()) {
 	case reflect.Bool:
 		return []*ast.Entry{{
 			Key:   field.Name,
-			Value: strconv.FormatBool(v.Bool()),
+			Value: strconv.FormatBool(indirect(v).Bool()),
 		}}, nil
 	case reflect.String:
 		return []*ast.Entry{{
 			Key:   field.Name,
-			Value: v.String(),
+			Value: indirect(v).String(),
 		}}, nil
 	case reflect.Array, reflect.Slice:
 		var entries []*ast.Entry
 		for i := 0; i < v.Len(); i++ {
-			lt := indirectType(field.Type.Elem())
-			lv := indirect(v.Index(i))
+			lt := indirectType(indirectType(field.Type).Elem())
+			lv := indirect(indirect(v).Index(i))
 			if !lv.IsValid() {
 				continue
 			}
