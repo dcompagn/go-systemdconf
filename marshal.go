@@ -180,10 +180,10 @@ func marshalEntries(field *fieldInfo, v reflect.Value) ([]*ast.Entry, error) {
 	if indirectType(field.Type) == durationType {
 		return []*ast.Entry{{
 			Key:   field.Name,
-			Value: FormatDuration(indirect(v).Interface().(time.Duration)),
+			Value: FormatDuration(v.Interface().(time.Duration)),
 		}}, nil
 	}
-	switch indirectType(field.Type.Kind()) {
+	switch indirectType(field.Type).Kind() {
 	case reflect.Bool:
 		return []*ast.Entry{{
 			Key:   field.Name,
